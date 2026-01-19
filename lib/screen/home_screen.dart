@@ -55,7 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Container(
-            height: screenHeight * 0.27,
+            //height: screenHeight * 0.31,
+            width: double.infinity,
+            constraints: BoxConstraints(
+              minHeight: 230,   // ছোট ফোনের জন্য
+              maxHeight: 240,   // বড় ফোনেও এর বেশি হবে না
+            ),
             decoration: BoxDecoration(
               color: Color(0xFF044B77),
               borderRadius: BorderRadius.only(
@@ -63,7 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 bottomRight: Radius.circular(20),
               ),
             ),
-            width: double.infinity,
 
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 30),
