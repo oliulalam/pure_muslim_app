@@ -433,7 +433,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(height: 15),
 
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              height: 400,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.black54, width: 2),
+              ),
 
+            ),
           ],
         ),
       ),
