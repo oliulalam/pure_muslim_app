@@ -310,6 +310,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
 
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/allah.png', width: 40, height: 40,),
+                        SizedBox(height: 5,),
+                        Text("Allah", style: TextStyle(fontSize: 16),)
+                      ],
+                    ),
+
 
 
                   ],
