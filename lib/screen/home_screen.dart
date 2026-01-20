@@ -492,6 +492,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(width: 5,),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          height: 105,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("2:34 PM", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+                              Text("Ifter ends", style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w400),)
+                            ],
+                          ),
+                        ),
+                      ),
 
                     ],
                   )
