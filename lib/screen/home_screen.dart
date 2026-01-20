@@ -511,7 +511,57 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-
+                      SizedBox(width: 5,),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: 105,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Sunrise", style: TextStyle( fontSize: 11, fontWeight: FontWeight.w600),),
+                                    Text('03:34 AM - 03:58 AM', style: TextStyle( fontSize: 12, fontWeight: FontWeight.w600),)
+                                  ],
+                                ),
+                              ),
+                              Divider(height: 1,),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Noon", style: TextStyle(fontSize: 11,fontWeight: FontWeight.w600),),
+                                    Text('03:34 AM - 03:58 AM', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),)
+                                  ],
+                                ),
+                              ),
+                              Divider(height: 1,),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Sunset", style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),),
+                                    Text('03:34 AM - 03:58 AM', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   )
 
