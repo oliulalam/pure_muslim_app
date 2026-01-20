@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -264,8 +267,64 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
+          SizedBox(height: 20,),
+
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.grey, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black45,
+                    blurRadius: 5,
+                    offset: Offset(0, 2)
+                  )
+                ]
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/tajweed.png', width: 40, height: 40,),
+                        SizedBox(height: 5,),
+                        Text("Quran", style: TextStyle(fontSize: 16),)
+                      ],
+                    ),
+
+
+
+                  ],
+                ),
+              ),
+
+            ),
+          )
+
         ],
       ),
     );
   }
+
+  Future<void> getPayersTime() async{
+
+    Uri uri = Uri.parse("https://api.aladhan.com/v1/timingsByCity?city=Dhaka&country=Bangladesh&method=2");
+
+     Response response = await http.get(uri);
+
+     if(response == 200){
+
+     }
+
+  }
+
 }
