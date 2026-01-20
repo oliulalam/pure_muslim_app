@@ -301,6 +301,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
 
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/kaba.png', width: 40, height: 40,),
+                        SizedBox(height: 5,),
+                        Text("Qibla", style: TextStyle(fontSize: 16),)
+                      ],
+                    ),
+
 
 
                   ],
