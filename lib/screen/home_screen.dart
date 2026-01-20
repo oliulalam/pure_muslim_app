@@ -441,7 +441,64 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.black54, width: 2),
               ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 15,
+                      left: 15,
+                      right: 15,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Sehri & Ifter",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                        Text(
+                          "Forbidden Times",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          height: 105,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("2:00 AM", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+                              Text("Sehri ends", style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w400),)
+                            ],
+                          ),
+                        ),
+                      ),
 
+                    ],
+                  )
+
+                  // Column end
+                ],
+              ),
             ),
           ],
         ),
