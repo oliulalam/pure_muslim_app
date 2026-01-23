@@ -187,7 +187,77 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //Bangla Date
+  String getBanglaFullDateInEnglish() {
+    DateTime now = DateTime.now();
+    int gDay = now.day;
+    int gMonth = now.month;
+    int gYear = now.year;
 
+    // বাংলা বছর
+    int bYear =
+    (gMonth < 4 || (gMonth == 4 && gDay < 14)) ? gYear - 594 : gYear - 593;
+
+    String bMonth = "";
+    String season = "";
+    int bDay = 1;
+
+    bool isLeapYear =
+        (gYear % 4 == 0 && gYear % 100 != 0) || (gYear % 400 == 0);
+
+    // -------- Month Mapping --------
+    if ((gMonth == 4 && gDay >= 14) || (gMonth == 5 && gDay <= 14)) {
+      bMonth = "Baishakh";
+      season = "Summer";
+      bDay = gDay - 13;
+    } else if ((gMonth == 5 && gDay >= 15) || (gMonth == 6 && gDay <= 15)) {
+      bMonth = "Jaistha";
+      season = "Summer";
+      bDay = gDay - 14;
+    } else if ((gMonth == 6 && gDay >= 16) || (gMonth == 7 && gDay <= 16)) {
+      bMonth = "Ashar";
+      season = "Rainy";
+      bDay = gDay - 15;
+    } else if ((gMonth == 7 && gDay >= 17) || (gMonth == 8 && gDay <= 16)) {
+      bMonth = "Shraban";
+      season = "Rainy";
+      bDay = gDay - 16;
+    } else if ((gMonth == 8 && gDay >= 17) || (gMonth == 9 && gDay <= 15)) {
+      bMonth = "Bhadra";
+      season = "Autumn";
+      bDay = gDay - 16;
+    } else if ((gMonth == 9 && gDay >= 16) || (gMonth == 10 && gDay <= 15)) {
+      bMonth = "Ashwin";
+      season = "Autumn";
+      bDay = gDay - 15;
+    } else if ((gMonth == 10 && gDay >= 16) || (gMonth == 11 && gDay <= 15)) {
+      bMonth = "Kartik";
+      season = "Late Autumn";
+      bDay = gDay - 15;
+    } else if ((gMonth == 11 && gDay >= 16) || (gMonth == 12 && gDay <= 15)) {
+      bMonth = "Agrahayan";
+      season = "Late Autumn";
+      bDay = gDay - 15;
+    } else if ((gMonth == 12 && gDay >= 16) || (gMonth == 1 && gDay <= 14)) {
+      bMonth = "Poush";
+      season = "Winter";
+      bDay = gDay >= 16 ? gDay - 15 : gDay + 16;
+    } else if ((gMonth == 1 && gDay >= 15) || (gMonth == 2 && gDay <= 13)) {
+      // ✅ MAGH (fixed)
+      bMonth = "Magh";
+      season = "Winter";
+      bDay = gDay >= 15 ? gDay - 14 : gDay + 17;
+    } else if ((gMonth == 2 && gDay >= 14) || (gMonth == 3 && gDay <= 14)) {
+      bMonth = "Falgun";
+      season = "Spring";
+      bDay = gDay >= 14 ? gDay - 13 : gDay + (isLeapYear ? 16 : 17);
+    } else {
+      bMonth = "Chaitra";
+      season = "Spring";
+      bDay = gDay - 14;
+    }
+
+    return "$bDay $bMonth $bYear | $season";
+  }
 
 
 
