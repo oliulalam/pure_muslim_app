@@ -27,6 +27,7 @@ class PrayerTimeModel {
       return DateFormat("hh:mm a").format(tempDate); // এটি "05:30 PM" ফরম্যাটে দিবে
     }
 
+
     return PrayerTimeModel(
       fajr: convertTo12Hour(timings['Fajr']),
       sunrise: convertTo12Hour(timings['Sunrise']),
