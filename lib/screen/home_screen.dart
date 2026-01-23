@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../Model/PrayerTimeModel.dart';
 
@@ -21,6 +24,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String countryName = "";
   PrayerTimeModel? prayerModel;
 
+  Timer? _timer;
+  String remainingTime = "00:00:00";
+  String nextPrayerName = "Loading...";
+  double progressValue = 0.0;
+
 
   @override
   void initState() {
@@ -28,6 +36,12 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       requestLocationManually();
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
 
@@ -97,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 200) {
       setState(() {
         prayerModel = PrayerTimeModel.fromJson(jsonDecode(response.body)['data']);
+        startTimer();
       });
     }
   }
@@ -111,12 +126,68 @@ class _HomeScreenState extends State<HomeScreen> {
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      prayerModel = PrayerTimeModel.fromJson(jsonDecode(response.body)["data"]);
-      cityName = "Dhaka";
-      countryName = "Bangladesh";
-      setState(() {});
+
+      setState(() {
+        prayerModel = PrayerTimeModel.fromJson(jsonDecode(response.body)["data"]);
+        cityName = "Dhaka";
+        countryName = "Bangladesh";
+        startTimer();
+      });
     }
   }
+
+
+  void startTimer() {
+    _timer?.cancel(); // আগের টাইমার থাকলে বন্ধ করবে
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (prayerModel == null) return;
+
+      DateTime now = DateTime.now();
+
+      Map<String, DateTime> prayerTimes = {
+        "Fajr": _parseTime(prayerModel!.fajr),
+        "Dhuhr": _parseTime(prayerModel!.dhuhr),
+        "Asr": _parseTime(prayerModel!.asr),
+        "Maghrib": _parseTime(prayerModel!.maghrib),
+        "Isha": _parseTime(prayerModel!.isha),
+      };
+
+      String next = "Fajr";
+      DateTime nextTime = prayerTimes["Fajr"]!.add(const Duration(days: 1));
+
+      for (var entry in prayerTimes.entries) {
+        if (entry.value.isAfter(now)) {
+          next = entry.key;
+          nextTime = entry.value;
+          break;
+        }
+      }
+
+      Duration diff = nextTime.difference(now);
+
+      if (mounted) {
+        setState(() {
+          nextPrayerName = next;
+          remainingTime = "${diff.inHours.toString().padLeft(2, '0')}h "
+              "${(diff.inMinutes % 60).toString().padLeft(2, '0')}m "
+              "${(diff.inSeconds % 60).toString().padLeft(2, '0')}s";
+
+          // প্রগ্রেস বার ভ্যালু (এটি ০.০ থেকে ১.০ এর মধ্যে থাকতে হয়)
+          progressValue = (diff.inMinutes / 600).clamp(0.0, 1.0);
+        });
+      }
+    });
+  }
+
+  DateTime _parseTime(String time) {
+    DateFormat format = DateFormat("hh:mm a");
+    DateTime temp = format.parse(time);
+    DateTime now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, temp.hour, temp.minute);
+  }
+
+  //Bangla Date
+
 
 
 
@@ -191,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '17-Jan-2026 | Saturday',
+                      "${prayerModel!.readableDate} | ${prayerModel!.weekday}",
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 14,
@@ -201,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '3 Magh 1433 | Winter',
+                      getBanglaFullDateInEnglish(),
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 14,
@@ -211,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '28 Rajab 1447 AH',
+                      "${prayerModel!.hijriDay} ${prayerModel!.hijriMonth} ${prayerModel!.hijriYear} AH",
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 14,
@@ -509,7 +580,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          '02:24 AM',
+                        DateFormat('hh:mm a').format(DateTime.now()),
+
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -519,7 +591,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         SizedBox(height: 4),
                         Text(
-                          'Remaining: 05h 36m 12s',
+                          'Remaining: $remainingTime',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -528,7 +600,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'Next: Fajr',
+                          'Next: $nextPrayerName',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black54,
@@ -635,7 +707,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -684,15 +756,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> getPayersTime() async {
-    Uri uri = Uri.parse(
-      "https://api.aladhan.com/v1/timingsByCity?city=Dhaka&country=Bangladesh&method=2",
-    );
-
-    Response response = await http.get(uri);
-
-    if (response == 200) {}
   }
 }
