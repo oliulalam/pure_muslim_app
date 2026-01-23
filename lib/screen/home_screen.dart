@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+
+import '../Model/PrayerTimeModel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +16,112 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  String cityName = "Loading...";
+  String countryName = "";
+  PrayerTimeModel? prayerModel;
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      requestLocationManually();
+    });
+  }
+
+
+  Future<void> requestLocationManually() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+      return;
+    }
+
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      await getLocationAndLoadData();
+    } else {
+      await loadPrayerByCityFallback();
+    }
+  }
+
+
+  Future<void> getLocationAndLoadData() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await loadPrayerByCityFallback();
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      await loadPrayerByCityFallback();
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    List<Placemark> placemarks =
+    await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    cityName = placemarks.first.locality ?? "Unknown";
+    countryName = placemarks.first.country ?? "";
+
+    await getPrayerTimeByLocation(
+      position.latitude,
+      position.longitude,
+    );
+
+    setState(() {});
+  }
+
+  Future<void> getPrayerTimeByLocation(double lat, double lon) async {
+    Uri uri = Uri.parse(
+      "https://api.aladhan.com/v1/timings"
+          "?latitude=$lat&longitude=$lon&method=2",
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        prayerModel = PrayerTimeModel.fromJson(jsonDecode(response.body)['data']);
+      });
+    }
+  }
+
+
+  Future<void> loadPrayerByCityFallback() async {
+    Uri uri = Uri.parse(
+      "https://api.aladhan.com/v1/timingsByCity"
+          "?city=Dhaka&country=Bangladesh&method=2",
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      prayerModel = PrayerTimeModel.fromJson(jsonDecode(response.body)["data"]);
+      cityName = "Dhaka";
+      countryName = "Bangladesh";
+      setState(() {});
+    }
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -30,15 +141,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () {
-                print("Location Change");
+              onTap: () async {
+                await requestLocationManually();
               },
               child: Row(
                 children: [
                   Icon(Icons.location_on, color: Colors.white),
                   SizedBox(width: 5),
                   Text(
-                    "Dhaka, Bangladesh",
+                      "$cityName, $countryName",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white,
@@ -109,162 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     SizedBox(height: 30),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Fajor',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Icon(
-                                  Icons.wb_cloudy,
-                                  color: Color(0xFF81D4FA),
-                                  size: 28,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  '02:24 AM',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
 
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Dhuhr',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Icon(
-                                  Icons.wb_sunny,
-                                  color: Color(0xFFFFD600),
-                                  size: 28,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  '12:44 AM',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Asr',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Icon(
-                                  Icons.cloud_queue,
-                                  color: Color(0xFFFFB300),
-                                  size: 28,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  '04:24 PM',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Maghrib',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Icon(
-                                  Icons.wb_twilight,
-                                  color: Color(0xFFFFAB40),
-                                  size: 28,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  '05:45 PM',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Isha',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Icon(
-                                  Icons.nightlight_round,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  '06:55 PM',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    color: Color(0xFFFFFFFF),
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
