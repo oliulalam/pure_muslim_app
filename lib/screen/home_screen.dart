@@ -220,7 +220,162 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     SizedBox(height: 30),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Fajor',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Icon(
+                                  Icons.wb_cloudy,
+                                  color: Color(0xFF81D4FA),
+                                  size: 28,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  prayerModel!.fajr,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
 
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Dhuhr',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Icon(
+                                  Icons.wb_sunny,
+                                  color: Color(0xFFFFD600),
+                                  size: 28,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  prayerModel!.dhuhr,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Asr',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Icon(
+                                  Icons.cloud_queue,
+                                  color: Color(0xFFFFB300),
+                                  size: 28,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  prayerModel!.asr,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Maghrib',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Icon(
+                                  Icons.wb_twilight,
+                                  color: Color(0xFFFFAB40),
+                                  size: 28,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                   prayerModel!.maghrib,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Isha',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Icon(
+                                  Icons.nightlight_round,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  prayerModel!.isha,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
